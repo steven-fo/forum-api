@@ -5,7 +5,7 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    username: {
+    owner: {
       type: 'VARCHAR(50)',
       notNull: true,
     },
