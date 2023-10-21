@@ -23,6 +23,9 @@ const AuthenticationRepository = require('../Domains/authentications/Authenticat
 const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
+const AddThreadsUseCase = require('../Applications/use_case/AddThreadsUseCase');
+const ThreadsRepository = require('../Domains/threads/ThreadsRepository');
+const ThreadsRepositoryPostgres = require('./repository/ThreadsRepositoryPostgres');
 
 // creating container
 const container = createContainer();
@@ -72,6 +75,20 @@ container.register([
       dependencies: [
         {
           concrete: Jwt.token,
+        },
+      ],
+    },
+  },
+  {
+    key: ThreadsRepository.name,
+    Class: ThreadsRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
         },
       ],
     },
@@ -148,6 +165,19 @@ container.register([
         {
           name: 'authenticationTokenManager',
           internal: AuthenticationTokenManager.name,
+        },
+      ],
+    },
+  },
+  {
+    key: AddThreadsUseCase.name,
+    Class: AddThreadsUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadRepository',
+          internal: ThreadsRepository.name,
         },
       ],
     },
