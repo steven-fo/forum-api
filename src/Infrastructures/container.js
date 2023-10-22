@@ -33,6 +33,7 @@ const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseC
 const AddRepliesUseCase = require('../Applications/use_case/AddRepliesUseCase');
 const RepliesRepository = require('../Domains/replies/RepliesRepository');
 const RepliesRepositoryPostgres = require('./repository/RepliesRepositoryPostgres');
+const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
 
 // creating container
 const container = createContainer();
@@ -246,6 +247,19 @@ container.register([
   {
     key: AddRepliesUseCase.name,
     Class: AddRepliesUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'replyRepository',
+          internal: RepliesRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: DeleteReplyUseCase.name,
+    Class: DeleteReplyUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [

@@ -28,6 +28,19 @@ class RepliesRepositoryPostgres extends RepliesRepository {
     return new AddedReply({ ...result.rows[0] });
   }
 
+  async deleteReply(credentialId, threadId, commentId, replyId) {
+    await this.verifyThread(threadId);
+    await this.verifyComment(commentId);
+    await this.verifyReply(replyId);
+    await this.verifyReplyOwner(credentialId, replyId);
+
+    const query = {
+      text: 'UPDATE replies SET content = $1 WHERE id = $2',
+      values: ['**balasan telah dihapus**', replyId],
+    };
+    await this._pool.query(query);
+  }
+
   async verifyThread(threadId) {
     const query = {
       text: 'SELECT * FROM threads WHERE id = $1',
