@@ -11,6 +11,9 @@ const routes = (handler) => ([
     method: 'DELETE',
     path: '/threads/{threadId}/comments/{commentId}',
     handler: handler.deleteCommentByIdHandler,
+    options: {
+      auth: 'forumapi_jwt',
+    },
   },
 ]);
 
