@@ -13,6 +13,18 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    thread_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    comment_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    is_delete: {
+      type: 'boolean',
+      notNull: true,
+    },
   });
 };
 
