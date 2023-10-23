@@ -7,6 +7,10 @@ class CommentsRepository {
     throw new Error('COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
+  async getCommentByThreadId(threadId) {
+    throw new Error('COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
   async verifyThread(threadId) {
     throw new Error('COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
