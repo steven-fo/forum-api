@@ -21,6 +21,10 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    is_delete: {
+      type: 'boolean',
+      notNull: true,
+    },
   });
 };
 
