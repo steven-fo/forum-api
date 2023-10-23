@@ -17,9 +17,6 @@ class RepliesRepositoryPostgres extends RepliesRepository {
       content, credentialId, threadId, commentId,
     } = newReply;
 
-    await this.verifyThread(threadId);
-    await this.verifyComment(commentId);
-
     const query = {
       text: 'INSERT INTO replies VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id, content, owner',
       values: [id, content, date, credentialId, threadId, commentId, false],
@@ -28,15 +25,10 @@ class RepliesRepositoryPostgres extends RepliesRepository {
     return new AddedReply({ ...result.rows[0] });
   }
 
-  async deleteReply(credentialId, threadId, commentId, replyId) {
-    await this.verifyThread(threadId);
-    await this.verifyComment(commentId);
-    await this.verifyReply(replyId);
-    await this.verifyReplyOwner(credentialId, replyId);
-
+  async deleteReply(replyId) {
     const query = {
-      text: 'UPDATE replies SET content = $1 WHERE id = $2',
-      values: ['**balasan telah dihapus**', replyId],
+      text: 'UPDATE replies SET is_delete = true WHERE id = $1',
+      values: [replyId],
     };
     await this._pool.query(query);
   }

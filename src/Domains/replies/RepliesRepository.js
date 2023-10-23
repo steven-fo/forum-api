@@ -3,7 +3,7 @@ class RepliesRepository {
     throw new Error('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async deleteReply(credentialId, threadId, commentId, replyId) {
+  async deleteReply(replyId) {
     throw new Error('REPLIES_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
