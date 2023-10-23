@@ -16,7 +16,7 @@ class NewComment {
     }
 
     if (typeof content !== 'string') {
-      throw new Error('NEW_COMMENT.NOT_MEET_DATA_SPECIFICATION');
+      throw new Error('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
