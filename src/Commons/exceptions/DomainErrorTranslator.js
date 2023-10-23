@@ -25,10 +25,6 @@ DomainErrorTranslator._directories = {
   'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe data komen baru tidak sesuai'),
   'ADDED_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti komen ditambahkan tidak sesuai'),
   'ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe data komen ditambahkan tidak sesuai'),
-  'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti balasan baru tidak sesuai'),
-  'NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe data balasan baru tidak sesuai'),
-  'ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti balasan ditambahkan tidak sesuai'),
-  'ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe data balasan ditambahkan tidak sesuai'),
   'GET_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('properti komen tidak sesuai'),
   'GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tipe data komen tidak sesuai'),
 };
