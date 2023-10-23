@@ -4,7 +4,10 @@ class DeleteCommentUseCase {
   }
 
   async execute(credentialId, threadId, commentId) {
-    this._commentRepository.deleteComment(credentialId, threadId, commentId);
+    await this._commentRepository.verifyThread(threadId);
+    await this._commentRepository.verifyComment(commentId);
+    await this._commentRepository.verifyCommentOwner(commentId, credentialId);
+    this._commentRepository.deleteComment(commentId);
   }
 }
 

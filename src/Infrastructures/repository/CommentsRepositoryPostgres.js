@@ -15,8 +15,6 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     const date = new Date().toISOString();
     const { content, credentialId, threadId } = newComment;
 
-    await this.verifyThread(threadId);
-
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner',
       values: [id, credentialId, date, content, threadId, false],
@@ -26,7 +24,7 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
-  async deleteComment(credentialId, threadId, commentId) {
+  async deleteComment(commentId) {
     const query = {
       text: 'UPDATE comments SET is_delete = true WHERE id = $1',
       values: [commentId],
@@ -35,8 +33,6 @@ class CommentsRepositoryPostgres extends CommentsRepository {
   }
 
   async getCommentByThreadId(threadId) {
-    await this.verifyThread(threadId);
-
     const query = {
       text: `SELECT comments.id, users.username, comments.date, comments.content, comments.is_delete FROM comments
       LEFT JOIN threads ON threads.id = comments.thread_id
