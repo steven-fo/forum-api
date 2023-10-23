@@ -18,8 +18,8 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     await this.verifyThread(threadId);
 
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
-      values: [id, credentialId, date, content, threadId],
+      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner',
+      values: [id, credentialId, date, content, threadId, false],
     };
 
     const result = await this._pool.query(query);
@@ -32,7 +32,7 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     await this.verifyCommentOwner(commentId, credentialId);
 
     const query = {
-      text: 'DELETE FROM comments WHERE id = $1',
+      text: 'UPDATE comments SET is_delete = true WHERE id = $1',
       values: [commentId],
     };
     await this._pool.query(query);
