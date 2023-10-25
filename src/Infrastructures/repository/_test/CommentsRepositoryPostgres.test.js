@@ -141,6 +141,30 @@ describe('CommentsRepository postgres', () => {
       // Action & Assert
       await expect(commentRepository.verifyThread('xxx')).rejects.toThrow(NotFoundError);
     });
+
+    it('should not throw NotFoundError when thread is found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      const registeredUser = await userRepository.addUser(registerUser);
+
+      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
+      const newThread = new NewThread({
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+      }, registeredUser.id);
+      const addedThread = await threadRepository.addThread(newThread);
+
+      const commentRepository = new CommentsRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action & Assert
+      await expect(commentRepository.verifyThread(addedThread.id)).resolves.not.toThrow(NotFoundError);
+    });
   });
 
   describe('verifyComment function', () => {
@@ -164,6 +188,32 @@ describe('CommentsRepository postgres', () => {
 
       // Action & Assert
       await expect(commentRepository.verifyComment('xxx')).rejects.toThrow(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when comment is found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      const registeredUser = await userRepository.addUser(registerUser);
+      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
+      const newThread = new NewThread({
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+      }, registeredUser.id);
+      const addedThread = await threadRepository.addThread(newThread);
+      const commentRepository = new CommentsRepositoryPostgres(pool, fakeIdGenerator);
+      const newComment = new NewComment({
+        content: 'sebuah comment',
+      }, registeredUser.id, addedThread.id);
+      const addedComment = await commentRepository.addComment(newComment);
+
+      // Action & Assert
+      await expect(commentRepository.verifyComment(addedComment.id)).resolves.not.toThrow(NotFoundError);
     });
   });
 
@@ -201,6 +251,41 @@ describe('CommentsRepository postgres', () => {
 
       // Action & Assert
       await expect(commentRepository.verifyCommentOwner(commentId, registeredUser2.id)).rejects.toThrow(AuthorizationError);
+    });
+
+    it('should not throw AuthenticationError when given correct credential', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const fakeIdGenerator2 = () => '234';
+      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const userRepository2 = new UserRepositoryPostgres(pool, fakeIdGenerator2);
+      const registerUser1 = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      const registeredUser = await userRepository.addUser(registerUser1);
+      const registerUser2 = new RegisterUser({
+        username: 'user123',
+        password: 'not secret',
+        fullname: 'Sebuah nama',
+      });
+      await userRepository2.addUser(registerUser2);
+      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
+      const newThread = new NewThread({
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+      }, registeredUser.id);
+      const addedThread = await threadRepository.addThread(newThread);
+      const newComment = new NewComment({
+        content: 'sebuah comment',
+      }, registeredUser.id, addedThread.id);
+      const commentRepository = new CommentsRepositoryPostgres(pool, fakeIdGenerator);
+      const addedComment = await commentRepository.addComment(newComment);
+      const commentId = addedComment.id;
+
+      // Action & Assert
+      await expect(commentRepository.verifyCommentOwner(commentId, registeredUser.id)).resolves.not.toThrow(AuthorizationError);
     });
   });
 });
