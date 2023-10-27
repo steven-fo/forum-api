@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 const DeleteCommentUseCase = require('../DeleteCommentUseCase');
+const ThreadRepository = require('../../../Domains/threads/ThreadsRepository');
 const CommentRepository = require('../../../Domains/comments/CommentsRepository');
 
 describe('DeleteCommentUseCase', () => {
@@ -16,10 +17,11 @@ describe('DeleteCommentUseCase', () => {
     };
 
     /** creating dependency of use case */
+    const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockCommentRepository.verifyThread = jest.fn()
+    mockThreadRepository.verifyThread = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.verifyComment = jest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -30,6 +32,7 @@ describe('DeleteCommentUseCase', () => {
 
     /** creating use case instance */
     const getCommentsUseCase = new DeleteCommentUseCase({
+      threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
     });
 
@@ -37,7 +40,7 @@ describe('DeleteCommentUseCase', () => {
     await getCommentsUseCase.execute(user.id, useCaseParams.threadId, useCaseParams.commentId);
 
     // Assert
-    expect(mockCommentRepository.verifyThread).toBeCalledWith(useCaseParams.threadId);
+    expect(mockThreadRepository.verifyThread).toBeCalledWith(useCaseParams.threadId);
     expect(mockCommentRepository.verifyComment).toBeCalledWith(useCaseParams.commentId);
     expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(useCaseParams.commentId, user.id);
     expect(mockCommentRepository.deleteComment).toBeCalledWith(useCaseParams.commentId);

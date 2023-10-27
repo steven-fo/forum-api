@@ -44,18 +44,6 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     return result.rows;
   }
 
-  async verifyThread(threadId) {
-    const query = {
-      text: 'SELECT * FROM threads WHERE id = $1',
-      values: [threadId],
-    };
-    const result = await this._pool.query(query);
-
-    if (!result.rowCount) {
-      throw new NotFoundError('thread tidak ditemukan');
-    }
-  }
-
   async verifyComment(commentId) {
     const query = {
       text: 'SELECT * FROM comments WHERE id = $1',

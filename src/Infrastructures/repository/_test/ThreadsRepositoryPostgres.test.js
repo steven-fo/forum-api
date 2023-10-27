@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const pool = require('../../database/postgres/pool');
@@ -97,6 +98,46 @@ describe('ThreadsRepository postgres', () => {
 
       // Action & Assert
       await expect(threadRepository.getThreadById('xxx')).rejects.toThrow(NotFoundError);
+    });
+  });
+
+  describe('verifyThread function', () => {
+    it('should return 404 when thread not found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      await userRepository.addUser(registerUser);
+      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action & Assert
+      await expect(threadRepository.verifyThread('xxx')).rejects.toThrow(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when thread is found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      const registeredUser = await userRepository.addUser(registerUser);
+
+      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
+      const newThread = new NewThread({
+        title: 'sebuah thread',
+        body: 'sebuah body thread',
+      }, registeredUser.id);
+      const addedThread = await threadRepository.addThread(newThread);
+
+      // Action & Assert
+      await expect(threadRepository.verifyThread(addedThread.id)).resolves.not.toThrow(NotFoundError);
     });
   });
 });

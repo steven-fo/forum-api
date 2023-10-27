@@ -125,48 +125,6 @@ describe('CommentsRepository postgres', () => {
     });
   });
 
-  describe('verifyThread function', () => {
-    it('should return 404 when thread not found', async () => {
-      // Arrange
-      const fakeIdGenerator = () => '123';
-      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
-      const registerUser = new RegisterUser({
-        username: 'dicoding',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
-      });
-      await userRepository.addUser(registerUser);
-      const commentRepository = new CommentsRepositoryPostgres(pool, fakeIdGenerator);
-
-      // Action & Assert
-      await expect(commentRepository.verifyThread('xxx')).rejects.toThrow(NotFoundError);
-    });
-
-    it('should not throw NotFoundError when thread is found', async () => {
-      // Arrange
-      const fakeIdGenerator = () => '123';
-      const userRepository = new UserRepositoryPostgres(pool, fakeIdGenerator);
-      const registerUser = new RegisterUser({
-        username: 'dicoding',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
-      });
-      const registeredUser = await userRepository.addUser(registerUser);
-
-      const threadRepository = new ThreadsRepositoryPostgres(pool, fakeIdGenerator);
-      const newThread = new NewThread({
-        title: 'sebuah thread',
-        body: 'sebuah body thread',
-      }, registeredUser.id);
-      const addedThread = await threadRepository.addThread(newThread);
-
-      const commentRepository = new CommentsRepositoryPostgres(pool, fakeIdGenerator);
-
-      // Action & Assert
-      await expect(commentRepository.verifyThread(addedThread.id)).resolves.not.toThrow(NotFoundError);
-    });
-  });
-
   describe('verifyComment function', () => {
     it('should return 404 when comment not found', async () => {
       // Arrange
